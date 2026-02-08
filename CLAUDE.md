@@ -98,6 +98,40 @@ qmk_userspace/
     utils/                           # Keycode utilities
 ```
 
+## Home Row Mods ("Timeless" Configuration)
+
+Based on pgetreuer's port of urob's "ZMK Timeless Home Row Mods" to QMK. All HRM tap-hold settings are centralized in the userspace `config.h` and apply to all keyboards.
+
+### Core settings (userspace `config.h`)
+
+| Define | Value | Purpose |
+|---|---|---|
+| `TAPPING_TERM` | 250 | Large term makes behavior timer-insensitive |
+| `PERMISSIVE_HOLD` | flag | Quick mod activation via nested press (A↓ B↓ B↑ A↑ = hold) |
+| `FLOW_TAP_TERM` | 150 | Disables HRMs during fast typing to eliminate input lag |
+| `CHORDAL_HOLD` | flag | Opposite hands rule prevents false triggers in rolls |
+| `SPECULATIVE_HOLD` | flag | Immediate modifier application for responsive mouse/hotkey combos |
+
+### HRM order: CAGS (Ctrl, Alt, Gui, Shift)
+
+Defined in `keymaps/common/home_row_mods.h`. Shift is on the index fingers (T left, N right in Colemak-DH).
+
+### Chordal Hold (`gagregrog.c`)
+
+- `chordal_hold_layout` arrays defined per layout (`LAYOUT_split_3x5_3_h` with 30 entries, `LAYOUT_split_4x6_6` with 52 entries)
+- Thumb keys marked `'*'` (exempt from opposite-hands rule)
+- `get_chordal_hold()` callback adds exceptions for `RSFT_T(KC_N)` + `KC_QUOT`/`KC_SLASH`/`KC_SCLN` (same-hand shift for `"`, `?`, `:`)
+
+### Flow Tap (`gagregrog.c`)
+
+- `get_flow_tap_term()` callback disables Flow Tap for shift mod-taps (returns 0 for any `LSFT_T`/`RSFT_T` key)
+- This prevents fast typing from resolving shift as a tap before Chordal Hold can evaluate (e.g., typing `?` quickly)
+- All other mod-taps use the default Flow Tap behavior
+
+### Important: keyboard-level tapping settings
+
+Keyboard-level `tapping.term` or `TAPPING_TERM` overrides the userspace value. The charybdis and dilemma previously had `TAPPING_TERM 175` at the keyboard level — these were removed so the userspace 250ms applies universally. Only `tapping.toggle` (for `TT()` keys) remains at the keyboard level.
+
 ## Keycode Conventions
 
 RGB keycodes differ by feature:

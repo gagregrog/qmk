@@ -1,0 +1,23 @@
+{
+    "folders": [
+        {
+            "name": "qmk",
+            "path": "."
+        },
+        {
+            "name": "qmk_firmware",
+            "path": "qmk_firmware"
+        },
+        {
+            "name": "qmk_userspace",
+            "path": "qmk_userspace"
+        }
+    ],
+    "settings": {
+        "git.detectSubmodules": false,
+        "files.exclude": {
+            "qmk_firmware": true,
+            "qmk_userspace": true
+        }
+    }
+}

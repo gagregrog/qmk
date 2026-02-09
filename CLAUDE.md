@@ -167,6 +167,36 @@ Compiled artifacts (.uf2/.hex) are output to the userspace root.
 - Dactyl `chordal_hold_layout` needs 52 args (not 48) for `LAYOUT_split_4x6_6`
 - The dactyl `4x6/info.json` is upstream-maintained — don't modify it
 
+## VS Code / clangd Setup
+
+A multi-root workspace (`qmk.code-workspace`) provides three roots: `qmk` (parent), `qmk_firmware`, `qmk_userspace`.
+
+### IntelliSense via compile_commands.json
+
+QMK's build system generates a compilation database that gives clangd the exact include paths, defines, and flags for every source file:
+
+```bash
+# Generate for a specific keyboard (also compiles)
+qmk compile --compiledb -kb bastardkb/charybdis/3x5_3_h -km gagregrog
+```
+
+This creates `qmk_firmware/compile_commands.json`. Clangd finds it automatically for firmware files. The userspace `.clangd` has `CompilationDatabase: ../qmk_firmware` to point clangd at the same database.
+
+**Regenerate when:** You add/remove source files, change `rules.mk` includes, or need IntelliSense for a different keyboard's conditional code. After regenerating, restart clangd (`Cmd+Shift+P` > "clangd: Restart Language Server").
+
+**Per-keyboard caveat:** The database reflects one keyboard's build. Code inside conditionals for other keyboards (e.g., `#if defined(RGBLIGHT_ENABLE)` when built for charybdis which uses RGB Matrix) won't resolve. Regenerate with the relevant keyboard if needed.
+
+### Workspace settings
+
+- `git.detectSubmodules: false` — prevents VS Code from tracking qmk_firmware submodules (lib/chibios, lib/lufa, etc.)
+- `files.exclude` — hides build artifacts (`.build/`, `*.hex`, `*.bin`, `*.uf2`) and child dirs from parent root
+- `files.associations` — maps QMK JSON files to JSONC, `.h`/`.c` to C
+- `clangd.arguments: ["--header-insertion=never"]` — prevents clangd from auto-inserting headers
+
+### .clangd files
+
+Both repos have `.clangd` configs that strip embedded-specific compiler flags clang doesn't understand (`-mmcu`, `-mcpu`, etc.) and suppress false-positive diagnostics (ASM constraints, unknown attributes). The userspace `.clangd` mirrors the firmware's settings.
+
 ## Dotfiles Integration
 
 - **`~/.dotfiles/.scripts/setup-qmk.sh`** — Clones repos to `~/qmk/`, sets up remotes, runs `qmk setup` and `qmk doctor`

@@ -17,7 +17,27 @@
         "git.detectSubmodules": false,
         "files.exclude": {
             "qmk_firmware": true,
-            "qmk_userspace": true
-        }
+            "qmk_userspace": true,
+            "**/.build": true,
+            "**/*.hex": true,
+            "**/*.bin": true,
+            "**/*.uf2": true
+        },
+        "files.associations": {
+            "keyboard.json": "jsonc",
+            "info.json": "jsonc",
+            "keymap.json": "jsonc",
+            "qmk.json": "jsonc",
+            "qmk_module.json": "jsonc",
+            "*.h": "c",
+            "*.c": "c",
+            "*.inc": "c"
+        },
+        "editor.insertSpaces": true,
+        "clangd.arguments": ["--header-insertion=never"],
+        "extensions.recommendations": [
+            "llvm-vs-code-extensions.vscode-clangd",
+            "EditorConfig.EditorConfig"
+        ]
     }
 }

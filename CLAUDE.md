@@ -7,6 +7,8 @@ This directory (`~/qmk/`) contains two repos for QMK keyboard firmware:
 - **`qmk_firmware/`** — Fork of [qmk/qmk_firmware](https://github.com/qmk/qmk_firmware) (remote: `gagregrog/qmk_firmware`, branch: `gagregrog`). Contains keyboard hardware definitions. Upstream is `qmk/qmk_firmware`.
 - **`qmk_userspace/`** — User overlay repo ([gagregrog/qmk_userspace](https://github.com/gagregrog/qmk_userspace)). Contains all keymaps, shared user code, and build targets.
 
+The primary typing layout is **Colemak-DH**, with QWERTY available as a toggleable alternative via `TG_BASE`.
+
 QMK config points here:
 
 ```
